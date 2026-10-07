@@ -1,0 +1,42 @@
+{
+ "doctype": "Workspace Sidebar",
+ "name": "Agora Integration",
+ "title": "Agora Integration",
+ "module": "Agora Integration",
+ "app": "agora_integration",
+ "header_icon": "phone",
+ "standard": 1,
+ "items": [
+  {
+   "type": "Link",
+   "label": "Agora Settings",
+   "link_type": "DocType",
+   "link_to": "Agora Settings",
+   "icon": "settings",
+   "indent": 0,
+   "collapsible": 1
+  },
+  {
+   "type": "Link",
+   "label": "Call Sessions",
+   "link_type": "DocType",
+   "link_to": "Agora Call Session",
+   "icon": "phone",
+   "indent": 0,
+   "collapsible": 1
+  },
+  {
+   "type": "Link",
+   "label": "Call Events",
+   "link_type": "DocType",
+   "link_to": "Agora Call Event",
+   "icon": "file-lock",
+   "indent": 0,
+   "collapsible": 1
+  }
+ ],
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "creation": "2026-10-07 09:00:00.000000",
+ "modified": "2026-10-07 09:00:00.000000"
+}

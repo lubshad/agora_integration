@@ -1,0 +1,19 @@
+{
+ "doctype": "Desktop Icon",
+ "name": "Agora Integration",
+ "label": "Agora Integration",
+ "app": "agora_integration",
+ "icon_type": "Link",
+ "link_type": "Workspace Sidebar",
+ "link_to": "Agora Integration",
+ "sidebar": "Agora Integration",
+ "logo_url": "/assets/agora_integration/images/agora-icon.png",
+ "bg_color": "blue",
+ "hidden": 0,
+ "standard": 1,
+ "roles": [{"role": "System Manager"}],
+ "owner": "Administrator",
+ "modified_by": "Administrator",
+ "creation": "2026-10-07 09:00:00.000000",
+ "modified": "2026-10-07 09:00:00.000000"
+}

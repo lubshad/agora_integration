@@ -1,0 +1,11 @@
+{
+ "doctype": "DocType", "name": "Agora Call Event", "module": "Agora Integration", "autoname": "hash",
+ "field_order": ["call", "actor", "state", "version", "reason"],
+ "fields": [
+  {"fieldname": "call", "label": "Call", "fieldtype": "Link", "options": "Agora Call Session", "reqd": 1, "search_index": 1},
+  {"fieldname": "actor", "label": "Actor", "fieldtype": "Link", "options": "User"},
+  {"fieldname": "state", "label": "State", "fieldtype": "Data"},
+  {"fieldname": "version", "label": "Version", "fieldtype": "Int"},
+  {"fieldname": "reason", "label": "Reason", "fieldtype": "Data"}
+ ], "permissions": [{"role": "System Manager", "read": 1}], "sort_field": "creation", "sort_order": "DESC"
+}

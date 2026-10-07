@@ -1,0 +1,19 @@
+{
+ "doctype": "DocType", "name": "Agora Call Session", "module": "Agora Integration", "autoname": "hash",
+ "field_order": ["project", "caller", "recipient", "mode", "request_key", "channel", "state", "version", "deadline", "started_at", "ended_at", "end_reason", "participants"],
+ "fields": [
+  {"fieldname": "project", "label": "Project", "fieldtype": "Data", "reqd": 1, "search_index": 1},
+  {"fieldname": "caller", "label": "Caller", "fieldtype": "Link", "options": "User", "reqd": 1, "search_index": 1},
+  {"fieldname": "recipient", "label": "Recipient", "fieldtype": "Link", "options": "User", "reqd": 1, "search_index": 1},
+  {"fieldname": "mode", "label": "Mode", "fieldtype": "Select", "options": "audio\nvideo", "reqd": 1},
+  {"fieldname": "request_key", "label": "Request Key", "fieldtype": "Data", "unique": 1, "reqd": 1},
+  {"fieldname": "channel", "label": "Channel", "fieldtype": "Data", "unique": 1, "reqd": 1},
+  {"fieldname": "state", "label": "State", "fieldtype": "Select", "options": "Ringing\nConnecting\nActive\nEnded\nDeclined\nCancelled\nTimed Out\nFailed", "reqd": 1, "search_index": 1},
+  {"fieldname": "version", "label": "Version", "fieldtype": "Int", "default": "1"},
+  {"fieldname": "deadline", "label": "Deadline", "fieldtype": "Datetime"},
+  {"fieldname": "started_at", "label": "Started At", "fieldtype": "Datetime"},
+  {"fieldname": "ended_at", "label": "Ended At", "fieldtype": "Datetime"},
+  {"fieldname": "end_reason", "label": "End Reason", "fieldtype": "Data"},
+  {"fieldname": "participants", "label": "Participants", "fieldtype": "Table", "options": "Agora Call Participant", "reqd": 1}
+ ], "permissions": [{"role": "System Manager", "read": 1}], "sort_field": "creation", "sort_order": "DESC"
+}

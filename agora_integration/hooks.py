@@ -5,6 +5,9 @@ app_description = "Reusable user-to-user audio and video calling powered by Agor
 app_email = "lubshad4u4@gmail.com"
 app_license = "mit"
 
+required_apps = ["flutter_utils"]
+scheduler_events = {"cron": {"* * * * *": ["agora_integration.tasks.expire_calls"]}}
+
 # Apps
 # ------------------
 
@@ -261,4 +264,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

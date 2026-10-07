@@ -1,0 +1,13 @@
+{
+ "doctype": "DocType", "name": "Agora Call Participant", "module": "Agora Integration", "istable": 1,
+ "field_order": ["user", "uid", "device", "connected", "last_seen", "joined_at", "disconnected_at"],
+ "fields": [
+  {"fieldname": "user", "label": "User", "fieldtype": "Link", "options": "User", "reqd": 1},
+  {"fieldname": "uid", "label": "RTC UID", "fieldtype": "Int", "reqd": 1},
+  {"fieldname": "device", "label": "Accepting Device", "fieldtype": "Link", "options": "Flutter Device Credential"},
+  {"fieldname": "connected", "label": "Connected", "fieldtype": "Check"},
+  {"fieldname": "last_seen", "label": "Last Seen", "fieldtype": "Datetime"},
+  {"fieldname": "joined_at", "label": "Joined At", "fieldtype": "Datetime"},
+  {"fieldname": "disconnected_at", "label": "Disconnected At", "fieldtype": "Datetime"}
+ ], "permissions": []
+}
