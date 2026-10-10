@@ -6,6 +6,7 @@ app_email = "lubshad4u4@gmail.com"
 app_license = "mit"
 
 required_apps = ["flutter_utils"]
+after_install = "agora_integration.install.after_install"
 scheduler_events = {"cron": {"* * * * *": ["agora_integration.tasks.expire_calls"]}}
 
 # Apps

@@ -1,6 +1,6 @@
 {
  "doctype": "DocType", "name": "Agora Settings", "module": "Agora Integration", "issingle": 1,
- "field_order": ["enabled", "app_id", "app_certificate", "token_ttl", "ring_timeout", "connect_timeout", "heartbeat_timeout"],
+ "field_order": ["enabled", "app_id", "app_certificate", "token_ttl", "ring_timeout", "connect_timeout", "heartbeat_timeout", "presence_stale_after"],
  "fields": [
   {"fieldname": "enabled", "label": "Enabled", "fieldtype": "Check", "default": "0"},
   {"fieldname": "app_id", "label": "App ID", "fieldtype": "Data"},
@@ -8,7 +8,8 @@
   {"fieldname": "token_ttl", "label": "Token Lifetime (seconds)", "fieldtype": "Int", "default": "600", "reqd": 1},
   {"fieldname": "ring_timeout", "label": "Ringing Timeout (seconds)", "fieldtype": "Int", "default": "45", "reqd": 1},
   {"fieldname": "connect_timeout", "label": "Connection Timeout (seconds)", "fieldtype": "Int", "default": "45", "reqd": 1},
-  {"fieldname": "heartbeat_timeout", "label": "Heartbeat Timeout (seconds)", "fieldtype": "Int", "default": "90", "reqd": 1}
+  {"fieldname": "heartbeat_timeout", "label": "Heartbeat Timeout (seconds)", "fieldtype": "Int", "default": "90", "reqd": 1},
+  {"fieldname": "presence_stale_after", "label": "Presence Stale After (seconds)", "fieldtype": "Int", "default": "120", "reqd": 1}
  ],
  "permissions": [{"role": "System Manager", "read": 1, "write": 1}], "track_changes": 1
 }

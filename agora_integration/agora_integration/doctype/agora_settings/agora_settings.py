@@ -12,6 +12,7 @@ class AgoraSettings(Document):
 			("ring_timeout", 15, 120),
 			("connect_timeout", 15, 120),
 			("heartbeat_timeout", 30, 300),
+			("presence_stale_after", 30, 3600),
 		):
 			if not lower <= int(self.get(field) or 0) <= upper:
 				frappe.throw(_("{0} must be between {1} and {2} seconds.").format(field, lower, upper))
