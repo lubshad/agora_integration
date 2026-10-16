@@ -45,3 +45,23 @@ class NotifyPushGateTests(TestCase):
 		_, get_presence, enqueue = self._notify("Background", state="Active")
 		enqueue.assert_not_called()
 		get_presence.assert_not_called()
+
+	def test_terminal_state_dismisses_the_ring(self) -> None:
+		with (
+			patch.object(notifications.frappe, "publish_realtime"),
+			patch.object(notifications, "get_presence", return_value="Background"),
+			patch.object(notifications, "enqueue_ring_push") as ring,
+			patch.object(notifications, "enqueue_call_dismiss") as dismiss,
+		):
+			notifications.notify(_call("Ended"))
+		dismiss.assert_called_once()
+		ring.assert_not_called()
+
+	def test_foreground_recipient_never_dismisses(self) -> None:
+		with (
+			patch.object(notifications.frappe, "publish_realtime"),
+			patch.object(notifications, "get_presence", return_value="Foreground"),
+			patch.object(notifications, "enqueue_call_dismiss") as dismiss,
+		):
+			notifications.notify(_call("Declined"))
+		dismiss.assert_not_called()

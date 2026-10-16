@@ -1,6 +1,7 @@
 {
  "doctype": "DocType", "name": "Agora Settings", "module": "Agora Integration", "issingle": 1,
- "field_order": ["enabled", "app_id", "app_certificate", "token_ttl", "ring_timeout", "connect_timeout", "heartbeat_timeout", "presence_stale_after"],
+ "modified": "2026-10-16 12:00:00.000000",
+ "field_order": ["enabled", "app_id", "app_certificate", "token_ttl", "ring_timeout", "connect_timeout", "heartbeat_timeout", "presence_stale_after", "apns_section", "apns_team_id", "apns_key_id", "apns_private_key", "apns_voip_bundle_id", "apns_use_sandbox"],
  "fields": [
   {"fieldname": "enabled", "label": "Enabled", "fieldtype": "Check", "default": "0"},
   {"fieldname": "app_id", "label": "App ID", "fieldtype": "Data"},
@@ -9,7 +10,13 @@
   {"fieldname": "ring_timeout", "label": "Ringing Timeout (seconds)", "fieldtype": "Int", "default": "45", "reqd": 1},
   {"fieldname": "connect_timeout", "label": "Connection Timeout (seconds)", "fieldtype": "Int", "default": "45", "reqd": 1},
   {"fieldname": "heartbeat_timeout", "label": "Heartbeat Timeout (seconds)", "fieldtype": "Int", "default": "90", "reqd": 1},
-  {"fieldname": "presence_stale_after", "label": "Presence Stale After (seconds)", "fieldtype": "Int", "default": "120", "reqd": 1}
+  {"fieldname": "presence_stale_after", "label": "Presence Stale After (seconds)", "fieldtype": "Int", "default": "120", "reqd": 1},
+  {"fieldname": "apns_section", "fieldtype": "Section Break", "label": "Apple VoIP Push (CallKit)"},
+  {"fieldname": "apns_team_id", "fieldtype": "Data", "label": "APNs Team ID"},
+  {"fieldname": "apns_key_id", "fieldtype": "Data", "label": "APNs Key ID"},
+  {"fieldname": "apns_private_key", "fieldtype": "Password", "label": "APNs Private Key (.p8)", "description": "Contents of the Apple auth key, stored encrypted."},
+  {"fieldname": "apns_voip_bundle_id", "fieldtype": "Data", "label": "APNs VoIP Bundle ID", "description": "Explicit iOS bundle ID. The VoIP topic is this value plus .voip."},
+  {"fieldname": "apns_use_sandbox", "fieldtype": "Check", "label": "Use APNs Sandbox", "default": "0"}
  ],
  "permissions": [{"role": "System Manager", "read": 1, "write": 1}], "track_changes": 1
 }

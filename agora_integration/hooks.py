@@ -8,6 +8,13 @@ app_license = "mit"
 required_apps = ["flutter_utils"]
 after_install = "agora_integration.install.after_install"
 scheduler_events = {"cron": {"* * * * *": ["agora_integration.tasks.expire_calls"]}}
+device_credential_revoked = ["agora_integration.services.voip_devices.deactivate_device_voip"]
+doc_events = {
+	"Flutter Device Credential": {
+		"on_update": "agora_integration.services.voip_devices.credential_updated",
+		"on_trash": "agora_integration.services.voip_devices.credential_deleted",
+	}
+}
 
 # Apps
 # ------------------
