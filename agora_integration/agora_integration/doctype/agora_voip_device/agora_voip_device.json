@@ -1,0 +1,20 @@
+{
+ "doctype": "DocType",
+ "name": "Agora VoIP Device",
+ "module": "Agora Integration",
+ "description": "Calling-owned PushKit tokens. Core and Agora have no equivalent registration; links to Flutter Device Credential for identity without adding calling fields to generic authentication or FCM storage.",
+ "creation": "2026-10-16 12:00:00.000000",
+ "modified": "2026-10-16 12:00:00.000000",
+ "field_order": ["device", "app", "voip_enabled", "voip_last_seen_at", "voip_token", "voip_token_hash"],
+ "fields": [
+  {"fieldname": "device", "fieldtype": "Link", "options": "Flutter Device Credential", "label": "Managed Device", "reqd": 1, "read_only": 1, "search_index": 1, "in_list_view": 1},
+  {"fieldname": "app", "fieldtype": "Data", "label": "Application", "reqd": 1, "read_only": 1, "in_list_view": 1},
+  {"fieldname": "voip_enabled", "fieldtype": "Check", "label": "VoIP Push Enabled", "default": "0", "read_only": 1, "in_list_view": 1},
+  {"fieldname": "voip_last_seen_at", "fieldtype": "Datetime", "label": "VoIP Last Seen At", "read_only": 1},
+  {"fieldname": "voip_token", "fieldtype": "Text", "label": "VoIP Token", "hidden": 1, "read_only": 1, "permlevel": 1},
+  {"fieldname": "voip_token_hash", "fieldtype": "Data", "label": "VoIP Token Hash", "hidden": 1, "read_only": 1, "unique": 1, "permlevel": 1}
+ ],
+ "permissions": [{"role": "System Manager", "read": 1}],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
