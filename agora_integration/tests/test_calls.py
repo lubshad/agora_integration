@@ -4,8 +4,9 @@ import hmac
 import struct
 import unittest
 import zlib
+from datetime import datetime, timedelta
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from uuid import uuid4
 
 import frappe
@@ -33,6 +34,93 @@ class TokenTests(unittest.TestCase):
 		for uid, ttl, channel in ((0, 600, "ok"), (1, 0, "ok"), (1, 600, "invalid/channel")):
 			with self.assertRaises(ValueError):
 				build_rtc_token("a" * 32, "b" * 32, channel, uid, ttl)
+
+
+class ReadOnlyCallTokenTests(unittest.TestCase):
+	def setUp(self) -> None:
+		self.now = datetime(2026, 10, 17, 12, 0)
+		self.call = SimpleNamespace(
+			state="Connecting",
+			project="test_calls",
+			caller="caller",
+			recipient="recipient",
+			deadline=self.now + timedelta(seconds=45),
+			channel="call_test",
+			participants=[SimpleNamespace(user="caller", device="device", uid=17)],
+		)
+		for patcher in (
+			patch.object(calls, "now_datetime", return_value=self.now),
+			patch.object(calls, "_user", return_value="caller"),
+			patch.object(calls, "_device", return_value="device"),
+		):
+			patcher.start()
+			self.addCleanup(patcher.stop)
+
+	def token(self, policy: calls.Policy | None = None) -> dict:
+		return calls.renew_call_token("call", "test_calls", policy or Mock())
+
+	def test_token_does_not_lock_or_save_rows(self) -> None:
+		with (
+			patch.object(frappe, "get_doc", return_value=self.call) as get_doc,
+			patch.object(calls, "_save") as save,
+			patch.object(calls, "issue_token", return_value={"token": "test"}) as issue,
+		):
+			self.assertEqual(self.token(), {"token": "test"})
+			get_doc.assert_called_once_with("Agora Call Session", "call")
+			save.assert_not_called()
+			issue.assert_called_once_with("call_test", 17)
+
+	def test_expired_connection_cannot_issue_token(self) -> None:
+		self.call.deadline = self.now - timedelta(seconds=1)
+		with (
+			patch.object(calls, "_load", return_value=self.call),
+			patch.object(calls, "issue_token") as issue,
+			patch.object(frappe, "throw", side_effect=frappe.ValidationError),
+		):
+			with self.assertRaises(frappe.ValidationError):
+				self.token()
+			issue.assert_not_called()
+
+	def test_other_project_or_nonparticipant_cannot_issue_token(self) -> None:
+		with (
+			patch.object(frappe, "get_doc", return_value=self.call),
+			patch.object(calls, "issue_token") as issue,
+			patch.object(frappe, "throw", side_effect=frappe.PermissionError),
+		):
+			self.call.project = "another-project"
+			with self.assertRaises(frappe.PermissionError):
+				self.token()
+			self.call.project = "test_calls"
+			self.call.caller = "someone-else"
+			with self.assertRaises(frappe.PermissionError):
+				self.token()
+			issue.assert_not_called()
+
+	def test_expired_active_call_cannot_issue_token(self) -> None:
+		self.call.state = "Active"
+		self.call.participants[0].last_seen = self.now - timedelta(seconds=120)
+		with (
+			patch.object(calls, "_load", return_value=self.call),
+			patch.object(frappe, "get_single", return_value=SimpleNamespace(heartbeat_timeout=90)),
+			patch.object(calls, "issue_token") as issue,
+			patch.object(frappe, "throw", side_effect=frappe.ValidationError),
+		):
+			with self.assertRaises(frappe.ValidationError):
+				self.token()
+			issue.assert_not_called()
+
+	def test_permission_and_device_checks_still_apply(self) -> None:
+		with (
+			patch.object(calls, "_load", return_value=self.call),
+			patch.object(calls, "issue_token") as issue,
+			patch.object(frappe, "throw", side_effect=frappe.PermissionError),
+		):
+			with self.assertRaises(frappe.PermissionError):
+				self.token(Mock(side_effect=frappe.PermissionError))
+			self.call.participants[0].device = "another-device"
+			with self.assertRaises(frappe.PermissionError):
+				self.token()
+			issue.assert_not_called()
 
 
 @unittest.skipUnless(getattr(frappe.local, "site", None), "Requires connected local site")

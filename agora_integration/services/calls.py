@@ -79,15 +79,17 @@ def _save(call: Any, previous: str | None = None) -> None:
 		notify(call)
 
 
-def expire(call: Any) -> bool:
-	"""Called with the session row locked; terminal transitions release busy state."""
+def _expiration(call: Any) -> tuple[str, str] | None:
+	"""Evaluate expiry without changing the session or acquiring participant locks."""
 	if call.state not in ACTIVE:
-		return False
+		return None
 	now = now_datetime()
-	previous = call.state
 	if call.state in ("Ringing", "Connecting") and get_datetime(call.deadline) <= now:
-		call.state = "Timed Out" if call.state == "Ringing" else "Failed"
-		call.end_reason = "Invitation expired" if previous == "Ringing" else "Connection timeout"
+		return (
+			("Timed Out", "Invitation expired")
+			if call.state == "Ringing"
+			else ("Failed", "Connection timeout")
+		)
 	elif call.state == "Active":
 		timeout = int(frappe.get_single("Agora Settings").heartbeat_timeout or 90)
 		if all(
@@ -96,12 +98,19 @@ def expire(call: Any) -> bool:
 			and (not row.disconnected_at or time_diff_in_seconds(now, row.disconnected_at) <= timeout)
 			for row in call.participants
 		):
-			return False
-		call.state = "Ended"
-		call.end_reason = "Connection lost"
-	else:
+			return None
+		return "Ended", "Connection lost"
+	return None
+
+
+def expire(call: Any) -> bool:
+	"""Called with the session row locked; terminal transitions release busy state."""
+	expiration = _expiration(call)
+	if expiration is None:
 		return False
-	call.ended_at = now
+	previous = call.state
+	call.state, call.end_reason = expiration
+	call.ended_at = now_datetime()
 	_save(call, previous)
 	return True
 
@@ -236,8 +245,11 @@ def act(call_id: str, project: str, action: str, policy: Policy) -> dict[str, An
 
 
 def renew_call_token(call_id: str, project: str, policy: Policy) -> dict[str, Any]:
-	call = _load(call_id, project)
-	if call.state not in ("Connecting", "Active"):
+	# Issuing a token is read-only. Both devices request one as soon as accept
+	# commits; locking their hot User rows here causes snapshot conflicts with
+	# concurrent connection/auth requests. State transitions retain their locks.
+	call = _load(call_id, project, lock=False)
+	if call.state not in ("Connecting", "Active") or _expiration(call) is not None:
 		frappe.throw(_("This call cannot issue a media token."))
 	policy(call, "token")
 	participant = next(row for row in call.participants if row.user == _user())
